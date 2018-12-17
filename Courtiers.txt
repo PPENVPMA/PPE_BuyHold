@@ -1,0 +1,6 @@
+Courtiers Inf Sup TxF TxV Inf Sup TxF TxV Inf Sup TxF TxV
+BoursoramaDecouverte 0 500 1.99 0 500 99999999999 0 0.006 0 0 0 0
+BoursoramaClassic 0 1000 5.5 0 1000 99999999999 0 0.0048 0 0 0 0
+BoursoramaTrader 3500 7750 16.65 0 7750 99999999999 0 0.0022 0 0 0 0
+BoursoramaUltimateTrader 0 10000 9.9 0 10000 99999999999 0 0.0012 0 0 0 0
+FortuneOptimum 0 500 1.95 0 500 2000 3.90 0 2000 99999999999 0 0.002

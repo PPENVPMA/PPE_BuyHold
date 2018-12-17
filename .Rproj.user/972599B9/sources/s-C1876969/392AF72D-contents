@@ -1,0 +1,8 @@
+
+
+phi(
+  m_frais_broker,
+  broker,
+  nb_positions,
+  stock_price_unique
+  )

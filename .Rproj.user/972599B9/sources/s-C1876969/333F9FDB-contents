@@ -1,0 +1,64 @@
+################
+#PARTIE 1 : IMPORT DES DONNEES
+################
+setwd("/Users/nmace/Documents/ING4/")
+getwd()
+file_data="DATA_AGREGEE.txt"
+data=read.table(file_data, header = TRUE, sep = "\t", dec = ".",row.names = 1)
+################
+
+
+#FONCTION PERFORMANCE REL (LN)
+relative_performance<-function(vect){
+  temp=vector(mode = "numeric",length = length(vect)-1)
+  for(i in 2:length(vect)){
+    temp[i-1]=log(vect[i]/vect[i-1],base = exp(1))
+  }
+  return(temp)
+}
+
+#PART I - brownian motion
+#Nobs = nb de cassure dans la courbe
+Nobs = 3
+#nb d'axe à diffuser
+NbDiffu = 500
+#exprimé en année dans le TD. Correspond à la maturité de la modélisation
+Maturity = 1
+m1 <- matrix(runif(Nobs*NbDiffu), Nobs, NbDiffu)
+
+W = as.data.frame(apply(sqrt(Maturity/Nobs) * qnorm(m1), 2, cumsum))
+
+if(Nobs == 1) { W = t(W) }
+
+Wplot = rbind(rep(0, NbDiffu ), W)
+
+xScale = Maturity*(0:Nobs)/Nobs
+matplot(xScale, Wplot  , type = rep("l",NbDiffu), lty = 1, lwd = 1, col = 1:NbDiffu ,ylim  = c(-3,3))
+
+lines(xScale,sqrt(xScale), col="red", lwd = 3, lty = 2)
+lines(xScale,-sqrt(xScale), col="red", lwd = 3, lty = 2)
+lines(xScale,3*sqrt(xScale), col="purple", lwd = 3, lty = 2)
+lines(xScale,-3*sqrt(xScale), col="purple", lwd = 3, lty = 2)
+
+#proba d'etre dans les courbes violettes
+2*pnorm(3) - 1
+#proba d'etre dans les courbes rouges
+2*pnorm(1) - 1
+
+#PART II - calcul de la volatilité
+CAC_SPOT = data$CAC_SPOT
+vol = sd(relative_performance(CAC_SPOT))*sqrt(260)
+r = 1/100
+
+S0 = 5017
+S = S0 * exp (  (r - vol^2/2) * xScale  + vol * Wplot )
+
+matplot(xScale, S , type = rep("l",NbDiffu), lty = 1, lwd =1 , col =0:NbDiffu )
+
+
+lines(xScale, S0 * exp (  (r - vol^2/2) * xScale  + vol * sqrt( xScale )), col="red", lwd = 3, lty = 2)
+lines(xScale, S0 * exp (  (r - vol^2/2) * xScale  - vol * sqrt( xScale )), col="red", lwd = 3, lty = 2)
+lines(xScale, S0 * exp (  (r - vol^2/2) * xScale  + vol * 3* sqrt( xScale )), col="purple", lwd = 3, lty = 2)
+lines(xScale, S0 * exp (  (r - vol^2/2) * xScale  - vol *  3* sqrt( xScale )), col="purple", lwd = 3, lty = 2)
+
+
