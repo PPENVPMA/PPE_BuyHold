@@ -94,7 +94,7 @@ f_ultimate= function(Objectif, Nb_obs, nb_stock_initial,t_cash,stock_price)
   print(c("Exposition :", Objectif, "Nombre d'observation :", Nb_obs, "Nombre d'actions à t0 :",nb_stock_initial,"Capital initial", t_cash[1]))
   m=matrix(c(stock_price,nb_stock,cash),ncol=3)
   colnames(m)=c("Stockprice","   Nombre d'actions","    Capital")
-  print(c("Gain de ", (cash[length(cash)]+nb_stock[length(nb_stock)]*stock_price[length(stock_price)]-cash[1]))
+  print(c("Gain de ", (cash[length(cash)]+nb_stock[length(nb_stock)]*stock_price[length(stock_price)]-cash[1])))
   return(m) 
 }
 
