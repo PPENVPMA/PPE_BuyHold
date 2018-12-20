@@ -1,4 +1,5 @@
 #Initialisations
+source("/Users/mithurangajendran/Documents/PPE_BuyHold/Classes/Broker.R",local=FALSE)
 Kapital=10000
 stock_price=c(90,100)
 
@@ -10,7 +11,7 @@ stock_price=c(90,100)
 # Les tarifs sont notés comme suit: Seuil Minimum,Seuil Maximum,Frais fixe,Frais Variables.
 # les lignes ayant moins d'élément se verront compléter par 0.
 
-d2= read.table("C:/Users/nmace/Documents/ING4/PPE/PPE_BuyHold/Courtiers.txt",header= TRUE, sep=" " )
+d2= read.table("Courtiers.txt",header= TRUE, sep=" " )
 ############################### FONCTIONS #################################
 
 # La fonction phy retourne les frais de courtages(frais fixe+ frais variables d'un broker)
@@ -18,7 +19,7 @@ d2= read.table("C:/Users/nmace/Documents/ING4/PPE/PPE_BuyHold/Courtiers.txt",hea
 # Si frais de courtage =0 alors le seuil n'a pas été trouvé. La function renvoie alors NaN
 # La boucle parcourant les colonnes la parcour de 4 en 4.
 
-phi = function(m_frais_broker,broker,nb_positions,stock_price_unique)
+comp_broker_fees = function(m_frais_broker,broker,nb_positions,stock_price_unique)
 {
   frais_courtages=NaN
   for(i in 2:length(m_frais_broker[,1]))
@@ -41,17 +42,17 @@ phi = function(m_frais_broker,broker,nb_positions,stock_price_unique)
 }
 
 
-# La fonction lowest_phi retourne le broker le moins chère pour un prix et un nombre d'actifs
+# La fonction lowest_comp_broker_fees retourne le broker le moins chère pour un prix et un nombre d'actifs
 # donné. 
 # Le minima est trouvé par la position dans la liste L.
 
-lowest_phi= function(m_frais_broker,nb_positions,stock_price_unique)
+lowest_comp_broker_fees= function(m_frais_broker,nb_positions,stock_price_unique)
 {
-  L=phi(m_frais_broker,m_frais_broker[1,1],nb_positions,stock_price_unique)
+  L=comp_broker_fees(m_frais_broker,m_frais_broker[1,1],nb_positions,stock_price_unique)
   nom_broker=m_frais_broker[1,1]
   for(i in 2:length(m_frais_broker[,1]))
   {
-    L=c(L,phi(m_frais_broker,m_frais_broker[i,1],nb_positions,stock_price_unique))
+    L=c(L,comp_broker_fees(m_frais_broker,m_frais_broker[i,1],nb_positions,stock_price_unique))
   }
   index= which.min(L)
   nom_broker= m_frais_broker[index,1]
@@ -64,7 +65,7 @@ f_nb_actions=function(Kapital,stock_price)
 {
   n=Kapital%/%stock_price[1]
   reste=Kapital%%stock_price[1]
-  while (phi(d2,"BoursoramaClassic",n,stock_price[1])>reste) {
+  while (comp_broker_fees(d2,"BoursoramaClassic",n,stock_price[1])>reste) {
     reste=reste+stock_price[1]
     n=n-1
   }
@@ -76,7 +77,7 @@ f_nb_actions=function(Kapital,stock_price)
 #Calcul du cash restant dans le portefeuille
 f_cash_restant=function(d2,broker,nb_positions,stock_price,Kapital)
 {
-  cash =Kapital - stock_price[1]* f_nb_actions(Kapital,stock_price)-phi(d2,"BoursoramaClassic",nb_positions,stock_price[1])
+  cash =Kapital - stock_price[1]* f_nb_actions(Kapital,stock_price)-comp_broker_fees(d2,"BoursoramaClassic",nb_positions,stock_price[1])
   return(cash)
 }
 
@@ -84,7 +85,7 @@ f_cash_restant=function(d2,broker,nb_positions,stock_price,Kapital)
 #Calcul des Profits and Loss
 f_PL=function(d2,broker,nb_positions,stock_price)
 {
-  PL=nb_positions*(stock_price[2]-stock_price[1])-phi(d2,"BoursoramaClassic",nb_positions,stock_price[1])-phi(d2,"BoursoramaClassic",nb_positions,stock_price[2])
+  PL=nb_positions*(stock_price[2]-stock_price[1])-comp_broker_fees(d2,"BoursoramaClassic",nb_positions,stock_price[1])-comp_broker_fees(d2,"BoursoramaClassic",nb_positions,stock_price[2])
   return(PL)
 }
 
